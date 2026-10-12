@@ -1,0 +1,30 @@
+name: Alerta CI DevOps
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Ejecutar Hola Mundo
+        run: node index.js
+
+      - name: Enviar notificación a ntfy.sh
+        run: |
+          curl -H "Title: Notificación de Despliegue CI - Práctica 4" \
+               -H "Priority: default" \
+               -H "Tags: white_check_mark,rocket" \
+               -d "Se ha subido un nuevo commit a la rama main por ${{ github.actor }}: ${{ github.event.head_commit.message }}" \
+               https://ntfy.sh/devops-itla
